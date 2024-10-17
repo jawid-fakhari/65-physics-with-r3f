@@ -15,15 +15,15 @@ export default function Experience() {
         <Physics debug>
 
             <RigidBody colliders="ball">
-                <mesh castShadow position={[- 2, 2, 0]}>
+                <mesh castShadow position={[0, 4, 0]}>
                     <sphereGeometry />
                     <meshStandardMaterial color="orange" />
                 </mesh>
             </RigidBody>
 
-            <RigidBody>
-                <mesh castShadow position={[2, 2, 0]}>
-                    <boxGeometry />
+            <RigidBody colliders="trimesh">
+                <mesh castShadow position={[0, 1, 0]} rotation-x={Math.PI * 0.5}>
+                    <torusGeometry args={[1, 0.5, 32]} />
                     <meshStandardMaterial color="mediumpurple" />
                 </mesh>
             </RigidBody>
