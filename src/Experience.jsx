@@ -12,18 +12,21 @@ export default function Experience() {
         <directionalLight castShadow position={[1, 2, 3]} intensity={4.5} />
         <ambientLight intensity={1.5} />
 
-        <Physics>
-            <RigidBody>
+        <Physics debug>
+
+            <RigidBody colliders="ball">
                 <mesh castShadow position={[- 2, 2, 0]}>
                     <sphereGeometry />
                     <meshStandardMaterial color="orange" />
                 </mesh>
             </RigidBody>
 
-            <mesh castShadow position={[2, 2, 0]}>
-                <boxGeometry />
-                <meshStandardMaterial color="mediumpurple" />
-            </mesh>
+            <RigidBody>
+                <mesh castShadow position={[2, 2, 0]}>
+                    <boxGeometry />
+                    <meshStandardMaterial color="mediumpurple" />
+                </mesh>
+            </RigidBody>
 
             <RigidBody type='fixed'>
                 <mesh receiveShadow position-y={- 1.25}>
