@@ -1,5 +1,5 @@
 import { OrbitControls } from '@react-three/drei'
-import { Physics, RigidBody } from '@react-three/rapier'
+import { CuboidCollider, Physics, RigidBody } from '@react-three/rapier'
 import { Perf } from 'r3f-perf'
 
 export default function Experience() {
@@ -21,8 +21,13 @@ export default function Experience() {
                 </mesh>
             </RigidBody>
 
-            <RigidBody colliders="trimesh">
-                <mesh castShadow position={[0, 1, 0]} rotation-x={Math.PI * 0.5}>
+            <RigidBody colliders={false} position={[0, 1, 0]}>
+                <CuboidCollider args={[1.5, 1.5, 0.5]} />
+                <CuboidCollider
+                    args={[1, 1, 1]}
+                    position={[0, 0, 0.5]}
+                />
+                <mesh castShadow rotation-x={Math.PI * 0.5}>
                     <torusGeometry args={[1, 0.5, 32]} />
                     <meshStandardMaterial color="mediumpurple" />
                 </mesh>
