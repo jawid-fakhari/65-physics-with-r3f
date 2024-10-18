@@ -1,20 +1,42 @@
 import { OrbitControls } from '@react-three/drei'
+import { useFrame } from '@react-three/fiber';
 import { CuboidCollider, Physics, RigidBody } from '@react-three/rapier'
 import { Perf } from 'r3f-perf'
 import { useRef } from 'react'
+import * as THREE from 'three'
 
 export default function Experience() {
     const cubeRef = useRef();
 
+    const twister = useRef()
+
 
 
     const cubeJump = () => {
-        //trovare massa attraverso metodo mass()
+        //trovare massa attraverso metodo mass()⬇️
         const mass = cubeRef.current.mass();
 
         cubeRef.current.applyImpulse({ x: 0, y: 5 * mass, z: 0 })
         cubeRef.current.applyTorqueImpulse({ x: 0, y: 1, z: 0 })
     }
+
+    useFrame((state) => {
+        const time = state.clock.getElapsedTime();
+
+        //setNextKinematicRotation ha bisogno di Quaternion e non Euler.
+        //To solve this, we are going to create a Three.js Euler, then create a Three.js Quaternion out of this Euler and since most mathematics objects are inter-compatible between Three.js and Rapier, we are going to send that Quaternion to setNextKinematicRotation.
+        const eulerRotation = new THREE.Euler(0, time, 0)
+        const quaternionRotation = new THREE.Quaternion()
+        quaternionRotation.setFromEuler(eulerRotation)
+
+        //Kinematic objec ha due funzioni importanti(setNextKinematicTranslation, setNextKinematicRotation)
+        twister.current.setNextKinematicRotation(quaternionRotation)
+
+        const angle = time * 0.5
+        const x = Math.cos(angle)
+        const z = Math.sin(angle)
+        twister.current.setNextKinematicTranslation({ x: x, y: -0.8, z: z })
+    })
 
     return <>
 
@@ -31,6 +53,7 @@ export default function Experience() {
 
         <Physics debug>
 
+            {/* Sfera arancione */}
             <RigidBody colliders="ball">
                 <mesh
                     castShadow
@@ -41,6 +64,20 @@ export default function Experience() {
                 </mesh>
             </RigidBody>
 
+            {/* Cubo allungato Rosso  */}
+            <RigidBody
+                ref={twister}
+                position={[0, - 0.8, 0]}
+                friction={0}
+                type="kinematicPosition"//tipo di oggetto che possiamo muovere e ruotare
+            >
+                <mesh scale={[0.3, 0.3, 3]}>
+                    <boxGeometry castShadow />
+                    <meshStandardMaterial color="red" />
+                </mesh>
+            </RigidBody>
+
+            {/* Cubo viola */}
             <RigidBody
                 ref={cubeRef}
                 position={[1.5, 2, 0]}
