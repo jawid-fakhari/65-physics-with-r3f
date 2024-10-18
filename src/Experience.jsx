@@ -2,13 +2,16 @@ import { OrbitControls } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber';
 import { CuboidCollider, Physics, RigidBody } from '@react-three/rapier'
 import { Perf } from 'r3f-perf'
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import * as THREE from 'three'
 
 export default function Experience() {
     const cubeRef = useRef();
 
     const twister = useRef()
+
+    //ritornare l'audio e salvarlo in uno stato locale che poi verrà utilizzato collisionEnter function
+    const [hitSound] = useState(() => new Audio('./hit.mp3'))
 
 
 
@@ -20,12 +23,13 @@ export default function Experience() {
         cubeRef.current.applyTorqueImpulse({ x: 0, y: 1, z: 0 })
     }
 
+    //*******Twister Animation
     useFrame((state) => {
         const time = state.clock.getElapsedTime();
 
         //setNextKinematicRotation ha bisogno di Quaternion e non Euler.
         //To solve this, we are going to create a Three.js Euler, then create a Three.js Quaternion out of this Euler and since most mathematics objects are inter-compatible between Three.js and Rapier, we are going to send that Quaternion to setNextKinematicRotation.
-        const eulerRotation = new THREE.Euler(0, time, 0)
+        const eulerRotation = new THREE.Euler(0, time * 3, 0)
         const quaternionRotation = new THREE.Quaternion()
         quaternionRotation.setFromEuler(eulerRotation)
 
@@ -37,6 +41,13 @@ export default function Experience() {
         const z = Math.sin(angle)
         twister.current.setNextKinematicTranslation({ x: x, y: -0.8, z: z })
     })
+
+    //********Collider Events
+    const collisionEnter = () => {
+        hitSound.current = 0
+        hitSound.volume = Math.random()
+        hitSound.play()
+    }
 
     return <>
 
@@ -64,12 +75,13 @@ export default function Experience() {
                 </mesh>
             </RigidBody>
 
-            {/* Cubo allungato Rosso  */}
+            {/* Twister Cubo allungato Rosso  */}
             <RigidBody
                 ref={twister}
                 position={[0, - 0.8, 0]}
                 friction={0}
                 type="kinematicPosition"//tipo di oggetto che possiamo muovere e ruotare
+                onCollisionEnter={collisionEnter}
             >
                 <mesh scale={[0.3, 0.3, 3]}>
                     <boxGeometry castShadow />
@@ -113,3 +125,11 @@ export default function Experience() {
         </Physics>
     </>
 }
+
+/**
+ * Events
+    * onCollisionEnter: when the RigidBody hit something.
+    * onCollisionExit: when the RigidBody separates from the object it just hit.
+    * onSleep: when the RigidBody starts sleeping.
+    * onWake: when the RigidBody stops sleeping.
+*/
