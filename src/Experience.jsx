@@ -17,13 +17,20 @@ export default function Experience() {
 
         <OrbitControls makeDefault />
 
-        <directionalLight castShadow position={[1, 2, 3]} intensity={4.5} />
+        <directionalLight
+            castShadow
+            position={[1, 2, 3]}
+            intensity={4.5}
+        />
         <ambientLight intensity={1.5} />
 
         <Physics debug>
 
             <RigidBody colliders="ball">
-                <mesh castShadow position={[-1.5, 2, 0]}>
+                <mesh
+                    castShadow
+                    position={[-1.5, 2, 0]}
+                >
                     <sphereGeometry />
                     <meshStandardMaterial color="orange" />
                 </mesh>
@@ -34,15 +41,28 @@ export default function Experience() {
                 position={[1.5, 2, 0]}
                 restitution={0.2} //bounce object
                 friction={0.7} //frizione tra gli oggetti
+                gravityScale={1}
+            //colliders={false} //per togliere il collider dal rigdibody
             >
-                <mesh castShadow onClick={cubeJump}>
+                <mesh
+                    castShadow
+                    onClick={cubeJump}
+                >
                     <boxGeometry />
                     <meshStandardMaterial color="mediumpurple" />
                 </mesh>
+                <CuboidCollider
+                    //usiamo custom collider per poter applicare massa e avere un controllo maggiore sul physics
+                    mass={2}
+                    args={[0.5, 0.5, 0.5]}
+                />
             </RigidBody>
 
             <RigidBody type='fixed'>
-                <mesh receiveShadow position-y={- 1.25}>
+                <mesh
+                    receiveShadow
+                    position-y={- 1.25}
+                >
                     <boxGeometry args={[10, 0.5, 10]} />
                     <meshStandardMaterial color="greenyellow" />
                 </mesh>
