@@ -2,15 +2,16 @@ import { OrbitControls, useGLTF } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber';
 import { CuboidCollider, CylinderCollider, Physics, RigidBody } from '@react-three/rapier'
 import { Perf } from 'r3f-perf'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import * as THREE from 'three'
 
 export default function Experience() {
-    const hamburger = useGLTF('./hamburger.glb')
-
     const cubeRef = useRef();
+    const twister = useRef();
+    const cubes = useRef()
 
-    const twister = useRef()
+    const hamburger = useGLTF('./hamburger.glb');
+    const cubesCount = 3
 
     //ritornare l'audio e salvarlo in uno stato locale che poi verrà utilizzato collisionEnter function
     const [hitSound] = useState(() => new Audio('./hit.mp3'))
@@ -56,6 +57,23 @@ export default function Experience() {
         // hitSound.volume = Math.random()
         // hitSound.play()
     }
+
+    /*****************
+     * Stress Test ⬇️💩
+     * creare multipli oggetti con pochi drawcall, guarda numero cubeCount e numeri di calls in pref window
+     */
+    useEffect(() => {
+        for (let i = 0; i < cubesCount; i++) {
+            const matrix = new THREE.Matrix4();//per ogni i crea un matrix4
+            matrix.compose(
+                new THREE.Vector3(i * 2, 0, 0),
+                new THREE.Quaternion(),
+                new THREE.Vector3(1, 1, 1)
+            )
+            cubes.current.setMatrixAt(i, matrix);//per ongi cubes set index, e matrix4 
+
+        }
+    })
 
     return <>
         <Perf position="top-left" />
@@ -147,6 +165,17 @@ export default function Experience() {
                 <CuboidCollider args={[0.5, 2, 5]} position={[5.5, 1, 0]} />
                 <CuboidCollider args={[0.5, 2, 5]} position={[-5.5, 1, 0]} />
             </RigidBody>
+
+            {/* instancedMesh aiuta se vogliamo un grand numero di oggetti con la stessa geometria, e materiale ma con different world transformation, Aiuta a diminuire drawcall quindi migliorare rendering performance*/}
+            <instancedMesh
+                //⬆️💩
+                castShadow
+                ref={cubes}
+                args={[null, null, cubesCount]}
+            >
+                <boxGeometry />
+                <meshStandardMaterial color='tomato' />
+            </instancedMesh>
 
         </Physics >
     </>
