@@ -89,7 +89,7 @@ export default function Experience() {
                 friction={0}
                 type="kinematicPosition"//tipo di oggetto che possiamo muovere e ruotare
             >
-                <mesh scale={[0.3, 0.3, 3]}>
+                <mesh scale={[0.3, 0.3, 5]}>
                     <boxGeometry castShadow />
                     <meshStandardMaterial color="red" />
                 </mesh>
@@ -138,6 +138,14 @@ export default function Experience() {
 
                 {/* se volessimo usare custom collider */}
                 <CylinderCollider args={[0.25, 0.75]} />
+            </RigidBody>
+
+            {/* creare dei muri invisibile sul piano */}
+            <RigidBody type='fixed'>
+                <CuboidCollider args={[5, 2, 0.5]} position={[0, 1, 5.5]} />
+                <CuboidCollider args={[5, 2, 0.5]} position={[0, 1, -5.5]} />
+                <CuboidCollider args={[0.5, 2, 5]} position={[5.5, 1, 0]} />
+                <CuboidCollider args={[0.5, 2, 5]} position={[-5.5, 1, 0]} />
             </RigidBody>
 
         </Physics >
