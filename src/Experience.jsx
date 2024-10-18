@@ -1,11 +1,13 @@
-import { OrbitControls } from '@react-three/drei'
+import { OrbitControls, useGLTF } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber';
-import { CuboidCollider, Physics, RigidBody } from '@react-three/rapier'
+import { CuboidCollider, CylinderCollider, Physics, RigidBody } from '@react-three/rapier'
 import { Perf } from 'r3f-perf'
 import { useRef, useState } from 'react'
 import * as THREE from 'three'
 
 export default function Experience() {
+    const hamburger = useGLTF('./hamburger.glb')
+
     const cubeRef = useRef();
 
     const twister = useRef()
@@ -14,7 +16,9 @@ export default function Experience() {
     const [hitSound] = useState(() => new Audio('./hit.mp3'))
 
 
-
+    /************
+     * Jump function
+     */
     const cubeJump = () => {
         //trovare massa attraverso metodo mass()⬇️
         const mass = cubeRef.current.mass();
@@ -23,7 +27,9 @@ export default function Experience() {
         cubeRef.current.applyTorqueImpulse({ x: 0, y: 1, z: 0 })
     }
 
-    //*******Twister Animation
+    /************
+     * Twister Animation
+     */
     useFrame((state) => {
         const time = state.clock.getElapsedTime();
 
@@ -42,7 +48,9 @@ export default function Experience() {
         twister.current.setNextKinematicTranslation({ x: x, y: -0.8, z: z })
     })
 
-    //********Collider Events
+    /*****************
+     * Collider Events
+     */
     const collisionEnter = () => {
         // hitSound.current = 0
         // hitSound.volume = Math.random()
@@ -50,7 +58,6 @@ export default function Experience() {
     }
 
     return <>
-
         <Perf position="top-left" />
 
         <OrbitControls makeDefault />
@@ -97,9 +104,9 @@ export default function Experience() {
                 gravityScale={1}
                 colliders={false} //per togliere il collider dal rigdibody
                 onCollisionEnter={collisionEnter}
-                onCollisionExit={() => { console.log('exit') }}
-                onSleep={() => { console.log('sleep') }}
-                onWake={() => { console.log('wake') }}
+            // onCollisionExit={() => { console.log('exit') }}
+            // onSleep={() => { console.log('sleep') }}
+            // onWake={() => { console.log('wake') }}
             >
                 <mesh
                     castShadow
@@ -123,6 +130,14 @@ export default function Experience() {
                     <boxGeometry args={[10, 0.5, 10]} />
                     <meshStandardMaterial color="greenyellow" />
                 </mesh>
+            </RigidBody>
+
+            {/* Importare modello creato, possiamo scegliere il tipo del collider, attenzione a trimesh e hull che sono pesanti*/}
+            <RigidBody colliders={false} position={[0, 4, 0]} >
+                <primitive object={hamburger.scene} scale={0.15} />
+
+                {/* se volessimo usare custom collider */}
+                <CylinderCollider args={[0.25, 0.75]} />
             </RigidBody>
 
         </Physics >
