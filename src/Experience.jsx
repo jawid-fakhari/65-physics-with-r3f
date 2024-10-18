@@ -44,9 +44,9 @@ export default function Experience() {
 
     //********Collider Events
     const collisionEnter = () => {
-        hitSound.current = 0
-        hitSound.volume = Math.random()
-        hitSound.play()
+        // hitSound.current = 0
+        // hitSound.volume = Math.random()
+        // hitSound.play()
     }
 
     return <>
@@ -81,7 +81,6 @@ export default function Experience() {
                 position={[0, - 0.8, 0]}
                 friction={0}
                 type="kinematicPosition"//tipo di oggetto che possiamo muovere e ruotare
-                onCollisionEnter={collisionEnter}
             >
                 <mesh scale={[0.3, 0.3, 3]}>
                     <boxGeometry castShadow />
@@ -97,6 +96,10 @@ export default function Experience() {
                 friction={0.7} //frizione tra gli oggetti
                 gravityScale={1}
                 colliders={false} //per togliere il collider dal rigdibody
+                onCollisionEnter={collisionEnter}
+                onCollisionExit={() => { console.log('exit') }}
+                onSleep={() => { console.log('sleep') }}
+                onWake={() => { console.log('wake') }}
             >
                 <mesh
                     castShadow
@@ -122,7 +125,7 @@ export default function Experience() {
                 </mesh>
             </RigidBody>
 
-        </Physics>
+        </Physics >
     </>
 }
 
