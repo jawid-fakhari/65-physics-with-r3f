@@ -4,10 +4,15 @@ import { Perf } from 'r3f-perf'
 import { useRef } from 'react'
 
 export default function Experience() {
-    const cubeRef = useRef()
+    const cubeRef = useRef();
+
+
 
     const cubeJump = () => {
-        cubeRef.current.applyImpulse({ x: 0, y: 5, z: 0 })
+        //trovare massa attraverso metodo mass()
+        const mass = cubeRef.current.mass();
+
+        cubeRef.current.applyImpulse({ x: 0, y: 5 * mass, z: 0 })
         cubeRef.current.applyTorqueImpulse({ x: 0, y: 1, z: 0 })
     }
 
@@ -42,7 +47,7 @@ export default function Experience() {
                 restitution={0.2} //bounce object
                 friction={0.7} //frizione tra gli oggetti
                 gravityScale={1}
-            //colliders={false} //per togliere il collider dal rigdibody
+                colliders={false} //per togliere il collider dal rigdibody
             >
                 <mesh
                     castShadow
@@ -53,7 +58,7 @@ export default function Experience() {
                 </mesh>
                 <CuboidCollider
                     //usiamo custom collider per poter applicare massa e avere un controllo maggiore sul physics
-                    mass={2}
+                    mass={2} //per avere più controllo sul physics mass e impulce possiamo salvarlo in un variabile, e chiamarlo dove abbiamo bisogno ⬆️ 
                     args={[0.5, 0.5, 0.5]}
                 />
             </RigidBody>
