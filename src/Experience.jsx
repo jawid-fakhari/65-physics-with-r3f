@@ -29,7 +29,12 @@ export default function Experience() {
                 </mesh>
             </RigidBody>
 
-            <RigidBody ref={cubeRef} position={[1.5, 2, 0]}>
+            <RigidBody
+                ref={cubeRef}
+                position={[1.5, 2, 0]}
+                restitution={0.2} //bounce object
+                friction={0.7} //frizione tra gli oggetti
+            >
                 <mesh castShadow onClick={cubeJump}>
                     <boxGeometry />
                     <meshStandardMaterial color="mediumpurple" />
